@@ -1,4 +1,10 @@
 MECAB_KANA_ROW = 17
-RUBY_FOR = 'kanji_only'     # kanji_only, all
 TRANSLIT = 'kunrei'     # nihon, kunrei
-OUTPUT_LAYOUT = 'brackets'  # brackets, md
+
+
+# input
+PREEXISTING_RUBY = 1 
+
+# output
+RUBY_FOR = 'kanji_only'     # kanji_only, all
+OUTPUT_LAYOUT = 'md'  # brackets, md

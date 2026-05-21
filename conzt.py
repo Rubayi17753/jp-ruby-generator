@@ -1,0 +1,5 @@
+RUBY_DELIM_L = '⟦'
+RUBY_DELIM_R = '⟧'
+RUBY_DELIM_P = '⦁'
+LINE_BREAK_SUB = '¶'
+SPACE_SUB = '◙'

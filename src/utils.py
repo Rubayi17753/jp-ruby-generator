@@ -1,4 +1,6 @@
 import re
+from markdownify import markdownify as md
+import conzt
 
 def has_kanji(text):
     return any(
@@ -7,6 +9,22 @@ def has_kanji(text):
     )
 
 def split_sentence(text):
-    sentences = re.split(r'(?<=[。！？])', text)
+    sentences = re.split(fr'(?<=[。！？{conzt.RUBY_DELIM_P}])', text)
     sentences = [s for s in sentences if s.strip()]
+    sentences = [s.replace('⦁', '') for s in sentences]
     return sentences
+
+def html_to_md(text):
+
+    replacements = [
+        ('<ruby>', f'{conzt.RUBY_DELIM_P}{conzt.RUBY_DELIM_L}'), 
+        ('</ruby>', f'{conzt.RUBY_DELIM_R}{conzt.RUBY_DELIM_P}'),
+        ('<rp>（</rp>', ''), ('<rp>）</rp>', ''),
+        ('<rb>', ''), ('</rb>', ''), 
+        ('<rt>', '|'), ('</rt>', ''), 
+    ]
+    for a, b in replacements:
+        text = text.replace(a, b)
+    text_md = md(text, strip='img')
+
+    return text_md
