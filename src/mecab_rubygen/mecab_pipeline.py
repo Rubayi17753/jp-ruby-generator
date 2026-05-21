@@ -1,10 +1,14 @@
 import MeCab
-import unidic_lite
 import config
 import conzt
 import src.utils as ut 
 
-tagger = MeCab.Tagger(fr'-r nul -d "{unidic_lite.DICDIR}"')
+if config.DIC == 'unidic':
+    import unidic_lite
+    tagger = MeCab.Tagger(fr'-r nul -d "{unidic_lite.DICDIR}"')
+elif config.DIC == 'ipadic':
+    import ipadic
+    tagger = MeCab.Tagger(fr'-r nul -d "{ipadic.DICDIR}"')
 
 if config.TRANSLIT in ('nihon', 'kunrei'):
     from src.kanji_to_kunreisiki import kana_converter 
@@ -27,7 +31,9 @@ def _kana_pairs_core(text):
 
         if not appended:
             feat = node.feature.split(',')
-            pairs.append((surf, feat[config.MECAB_KANA_ROW]))
+            kana = feat[config.MECAB_KANA_ROW] if len(feat) > config.MECAB_KANA_ROW else ''
+
+            pairs.append((surf, kana))
 
         node = node.next
 
@@ -51,24 +57,27 @@ def kana_pairs(sentence):
 
 if config.OUTPUT_LAYOUT == 'brackets':
     
-    def reconstitute(pairs):
+    def _reconstitute(pairs):
         def bracketify(rub):
             return f'({rub})' if rub else ''
         text = [f'{s}{bracketify(rub)}' for s, rub in pairs]
-        text = ''.join(text)
         return text
 
 elif config.OUTPUT_LAYOUT == 'md':
 
-    def reconstitute(pairs):
+    def _reconstitute(pairs):
         def segm(s, rub):
             if rub:
                 return f'<ruby>{s}<rp>（</rp><rt>{rub}</rt><rp>）</rp></ruby>'
             else:
                 return s
         text = [segm(s, rub) for s, rub in pairs]
-        text = ''.join(text)
         return text
+ 
+def reconstitute_common(pairs):    
+    text = _reconstitute(pairs)
+    text = config.TOKEN_DELIM.join(text)
+    return text
 
 def rubify(text, ext):
 
@@ -87,7 +96,7 @@ def rubify(text, ext):
     if kana_converter:
         pairs = [(a, kana_converter(b)) for a, b in pairs]
     
-    text = reconstitute(pairs)
+    text = reconstitute_common(pairs)
     text = text.replace(conzt.LINE_BREAK_SUB, '\n')
     text = text.replace(conzt.SPACE_SUB, ' ')
 
