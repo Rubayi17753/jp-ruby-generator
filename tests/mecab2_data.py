@@ -3,9 +3,7 @@ import unidic_lite
 import config
 import src.utils as ut 
 
-tagger = MeCab.Tagger(
-    fr'-r nul -d "{unidic_lite.DICDIR}"'
-)
+tagger = MeCab.Tagger(fr'-r nul -d "{unidic_lite.DICDIR}"')
 
 def kana_pairs(text):
 
@@ -15,13 +13,13 @@ def kana_pairs(text):
 
         surf = node.surface
 
-        if config.RUBY_FOR_KANJI_ONLY:
+        if config.RUBY_FOR == 'kanji_only':
             if surf and ut.has_kanji(surf):
                 feat = node.feature.split(',')
                 pairs.append((surf, feat[config.MECAB_KANA_ROW]))
             else:
                 pairs.append((surf, ''))
-        else:
+        elif config.RUBY_FOR == 'all':
             pairs.append((surf, feat[config.MECAB_KANA_ROW]))
 
         node = node.next
