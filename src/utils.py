@@ -3,10 +3,13 @@ from markdownify import markdownify as md
 import conzt
 
 def has_kanji(text):
-    return any(
-        0x4E00 <= ord(c) <= 0x9FFF
-        for c in text
-    )
+    return any(0x4E00 <= ord(c) <= 0x9FFF for c in text)
+
+def has_hiragana(text):
+    return any(0x3040 <= ord(c) <= 0x309F for c in text)
+
+def has_katakana(text):
+    return any(0x30A0 <= ord(c) <= 0x30FF for c in text)
 
 def split_sentence(text):
     sentences = re.split(fr'(?<=[。！？{conzt.RUBY_DELIM_P}])', text)

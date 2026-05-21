@@ -7,6 +7,9 @@ ENCODING_IN = 'shift_jis'
 PREEXISTING_RUBY = 1 
 
 # output
-RUBY_FOR = 'kanji_only'     # kanji_only, all
+RUBY_KANJI = 1
+RUBY_KATAKANA = 1
+RUBY_HIRAGANA = 0
+
 OUTPUT_LAYOUT = 'md'  # brackets, md
 TOKEN_DELIM = ''

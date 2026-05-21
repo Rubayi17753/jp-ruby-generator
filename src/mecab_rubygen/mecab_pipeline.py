@@ -21,19 +21,20 @@ def _kana_pairs_core(text):
     node = tagger.parseToNode(text)
     while node:
 
-        appended = 0
         surf = node.surface
+        kana = ''
+        feat = node.feature.split(',')
 
-        if config.RUBY_FOR == 'kanji_only':
-            if not ut.has_kanji(surf):
-                pairs.append((surf, ''))
-                appended = 1
-
-        if not appended:
-            feat = node.feature.split(',')
+        if ut.has_kanji(surf) and config.RUBY_KANJI:
             kana = feat[config.MECAB_KANA_ROW] if len(feat) > config.MECAB_KANA_ROW else ''
 
-            pairs.append((surf, kana))
+        elif ut.has_katakana(surf) and config.RUBY_KATAKANA:
+            kana = surf
+
+        elif ut.has_hiragana(surf) and config.RUBY_HIRAGANA:
+            kana = surf
+
+        pairs.append((surf, kana))  
 
         node = node.next
 
