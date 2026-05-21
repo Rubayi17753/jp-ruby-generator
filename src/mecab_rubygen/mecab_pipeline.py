@@ -40,6 +40,7 @@ if config.OUTPUT_LAYOUT == 'brackets':
         text = ''.join(text)
         return text
 
+
 def rubify(text):
     sentences = ut.split_sentence(text)
 
