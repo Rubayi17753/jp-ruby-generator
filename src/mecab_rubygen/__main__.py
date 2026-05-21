@@ -10,7 +10,7 @@ def main():
     without_ext = p.with_suffix('')
     ext_in = p.suffix
 
-    with open(fp_input, 'r', encoding='utf-8') as f:
+    with open(fp_input, 'r', encoding=config.ENCODING_IN) as f:
         text = f.read()
 
     text_rubified = rubify(text, ext_in)
